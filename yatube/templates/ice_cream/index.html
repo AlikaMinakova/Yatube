@@ -1,0 +1,19 @@
+<!-- templates/ice_cream/index.html -->
+{% extends 'base.html' %}
+{% block title %}
+  <title>{{ title }}</title>
+{% endblock %}
+{% block content %}
+{% if text == 'Главная страница' %}
+    <h1>Вы на главной странице.</h1>
+{% elif text == 'Вложенная страница' %}
+    <h1>Вы в одном клике от главной страницы!</h1>
+{% else %}
+    <h1>Мы понятия не имеем, где вы!</h1>
+{% endif %}
+<!--  По этому пути из <приложение>:<обработчик url> перейти при нажатии-->
+<a class="navbar-brand" href="{% url 'ice_cream:ice_cream_list' %}">
+  Страница со списком сортов мороженого
+</a>
+
+{% endblock %}
