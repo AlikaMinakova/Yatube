@@ -1,4 +1,8 @@
+# создание моделей в бд
+
 from django.db import models
+
+
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -21,10 +25,14 @@ class Post(models.Model):
         on_delete=models.CASCADE,
         related_name='posts'
     )
+    # Post.objects.filter(text__contains='утро').filter(author='leo').filter(pub_date__range
     group = models.ForeignKey(
         Group,
         on_delete=models.CASCADE,
         blank=True,
         null=True
     )
+
+    def __str__(self):
+        return self.text
 

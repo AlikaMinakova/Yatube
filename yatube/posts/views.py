@@ -1,3 +1,8 @@
+# обработчики url адресов
+
+import datetime
+
+from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 
 from django.http import HttpResponse
@@ -12,11 +17,17 @@ def index(request):
     # Одна строка вместо тысячи слов на SQL:
     # в переменную posts будет сохранена выборка из 10 объектов модели Post,
     # отсортированных по полю pub_date по убыванию (от больших значений к меньшим)
-    posts = Post.objects.order_by('-pub_date')[:10]
+    author = User.objects.get(username='leo')
+    keyword = "утро"
+    start_date = datetime.date(1854, 7, 7)
+    end_date = datetime.date(1854, 7, 21)
+    posts = Post.objects.filter(text__contains=keyword).filter(author=author).filter(
+        pub_date__range=(start_date, end_date))
     # В словаре context отправляем информацию в шаблон
     context = {
         'posts': posts,
         'title': 'Последние обновления на сайте',
+        'keyword': keyword
     }
     return render(request, 'posts/index.html', context)
 

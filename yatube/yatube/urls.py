@@ -1,3 +1,5 @@
+# главные слова в url адресах после которых переходим в приложение
+
 """
 URL configuration for yatube project.
 
@@ -23,4 +25,8 @@ urlpatterns = [
     path('', include('posts.urls', namespace='posts')),
     # Встроенная админка в Django подключена по этому адресу «из коробки»
     path('admin/', admin.site.urls),
+    # Все адреса с префиксом /auth
+    # будут прернаправлены в модуль django.contrib.auth
+    path('auth/', include('users.urls', namespace='users')),
+    path('auth/', include('django.contrib.auth.urls')),
 ]

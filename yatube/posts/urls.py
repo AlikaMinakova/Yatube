@@ -1,4 +1,4 @@
-# ice_cream/urls.py
+# после ключевого слова в url переход на какие обработчики
 from django.urls import path
 from . import views
 
