@@ -98,6 +98,7 @@ def group_posts(request, slug):
     }
     return render(request, 'posts/group_list.html', context)
 
+
 def profile(request, username):
     author = User.objects.get(username=username)
     # Здесь код запроса к модели и создание словаря контекста
@@ -153,9 +154,28 @@ def post_create(request):
 
         # Заодно заполним все поля формы данными, прошедшими валидацию,
         # чтобы не заставлять пользователя вносить их повторно
-        return render(request, 'posts/create_post.html', {'form': form})
+        return render(request, 'posts/create_post.html', {'form': form, 'is_edit': False})
 
     # Если пришёл не POST-запрос - создаём и передаём в шаблон пустую форму
     # пусть пользователь напишет что-нибудь
     form = PostForm()
-    return render(request, 'posts/create_post.html', {'form': form})
+    return render(request, 'posts/create_post.html', {'form': form, 'is_edit': False})
+
+
+def post_edit(request, id_post):
+    post = Post.objects.get(id=id_post)
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post.text = form.cleaned_data['text']
+            post.group = form.cleaned_data['group']
+            post.pub_date = datetime.datetime.now()
+            post.save()
+            return redirect(f'/profile/{request.user.username}/')
+
+        return render(request, 'posts/create_post.html', {'form': form, 'is_edit': True, 'post': post})
+
+    form = PostForm(instance=post)
+
+
+    return render(request, 'posts/create_post.html', {'form': form, 'is_edit': True, 'post': post, 'name': post.text})

@@ -5,17 +5,18 @@
 {% block content %}
 <!-- класс py-5 создает отступы сверху и снизу блока -->
 <div class="container py-5">
-    <h1>Записи сообщества: {{group.title}}</h1>>
+    <h1>Записи сообщества: {{group.title}}</h1>
     {% for post in page_obj %}
   <ul>
     <li>
-      Автор: {{ post.author.get_full_name }}
+      Автор: <a href="{% url 'posts:profile' post.author.username %}">{{post.author.username}}</a>
     </li>
     <li>
       Дата публикации: {{ post.pub_date|date:"d E Y" }}
     </li>
   </ul>
-  <p>{{ post.text }}</p>
+  <p>{{ post.text|truncatechars:30 }}</p>
+  <p><a href="{% url 'posts:post_detail' post.id %}">Подробнее о посте</a></p>
   {% if not forloop.last %}<hr>{% endif %}
 {% endfor %}
   {% include 'posts/includes/paginator.html' %}

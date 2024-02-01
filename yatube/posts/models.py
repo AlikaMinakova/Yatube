@@ -7,7 +7,6 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-TITLE_CHOICES = ["Literature", "News", "Painting"]
 
 class Group(models.Model):
     title = models.TextField()

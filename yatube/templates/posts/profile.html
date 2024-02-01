@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}
+    <!-- Подключены иконки, стили и заполенены мета теги -->
+    <title>{{title}}</title>
+{% endblock %}
+{% block content %}
+      <div class="container py-5">
+        <h1>Все посты пользователя {{page_obj.0.author.username}} </h1>
+        <h3>Всего постов: {{page_obj|length }}</h3>
+        <article>
+          {% for post in page_obj %}
+  <ul>
+    <li>
+      Автор: <a href="{% url 'posts:profile' post.author.username %}">{{post.author.username}}</a>
+    </li>
+    <li>
+      Дата публикации: {{ post.pub_date|date:"d E Y" }}
+    </li>
+  </ul>
+          <p>
+            {{ post.text|truncatechars:30 }}
+          </p>
+        </article>
+          {% if post.author.id == user.id %}
+  <a href="{% url 'posts:post_edit' post.id  %}">Редактировать</a>
+  {% else %}
+  <a href="{% url 'posts:post_detail' post.id %}">Подробнее о посте</a>
+  {% endif %}
+          <p></p>
+          {% if post.0.group %}
+            <a href="{% url 'posts:group_posts' post.group.slug %}">Все записи группы</a>
+        {% endif %}
+        <hr>
+        {% endfor %}
+        {% include 'posts/includes/paginator.html' %}
+</div>
+{% endblock %}

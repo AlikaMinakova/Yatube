@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}
+    <!-- Подключены иконки, стили и заполенены мета теги -->
+     <title>Пост {{post.0.id}}</title>
+{% endblock %}
+{% block content %}
+      <div class="container py-5">
+        <article>
+  <ul>
+    <li>
+      Автор: {{ post.0.author.get_full_name }}
+    </li>
+    <li>
+      Дата публикации: {{ post.0.pub_date|date:"d E Y" }}
+    </li>
+    <li>
+      Группа: {{ post.0.group.title }}
+    </li>
+  </ul>
+          <p>
+            {{ post.0.text }}
+          </p>
+        </article>
+          {% if post.0.group %}
+            <a href="{% url 'posts:group_posts' post.0.group.slug %}">Все записи группы</a>
+        {% endif %}
+        <hr>
+        {% include 'posts/includes/paginator.html' %}
+</div>
+{% endblock%}
