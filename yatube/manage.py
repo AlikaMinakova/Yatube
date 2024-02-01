@@ -20,4 +20,9 @@ def main():
 
 if __name__ == '__main__':
     main()
-#python manage.py runserver
+
+#alika2 - superuser
+#4FHdg7+=
+
+#alina
+#1234asdf';lk
