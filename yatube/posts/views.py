@@ -31,7 +31,7 @@ def authorized_only(func):
 
 
 # Главная страница
-@authorized_only
+#@authorized_only
 def index(request):
     # Одна строка вместо тысячи слов на SQL:
     # в переменную posts будет сохранена выборка из 10 объектов модели Post,

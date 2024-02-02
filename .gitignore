@@ -1,2 +1,7 @@
 /venv/
 /.idea/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
