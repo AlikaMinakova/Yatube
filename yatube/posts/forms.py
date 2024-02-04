@@ -8,7 +8,7 @@ class PostForm(forms.ModelForm):
         # На основе какой модели создаётся класс формы
         model = Post
         # Укажем, какие поля будут в форме
-        fields = ('text', 'group')
+        fields = ('text', 'group', 'image')
 
         # Метод-валидатор для поля text
     def clean_subject(self):

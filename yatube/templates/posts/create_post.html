@@ -1,5 +1,3 @@
-
-
 {% extends "base.html" %}
 {% block title %}
 <title>{% if is_edit %}
@@ -10,6 +8,7 @@
 </title>
 {% endblock %}
 {% block content %}
+{% load thumbnail %}
 {% load user_filters %}
   <div class="row justify-content-center">
     <div class="col-md-8 p-5">
@@ -38,10 +37,10 @@
           {% endif %}
           <form
             {% if is_edit %}
-            method="post" action="{% url 'posts:post_edit' post.id %}"
-          {% else %}
-            method="post" action="{% url 'posts:post_create' %}"
-          {% endif %}>
+            method="post" enctype="multipart/form-data" action="{% url 'posts:post_edit' post.id %}"
+            {% else %}
+            method="post" enctype="multipart/form-data" action="{% url 'posts:post_create' %}"
+            {% endif %}>
           {% csrf_token %}
 
           {% for field in form %}

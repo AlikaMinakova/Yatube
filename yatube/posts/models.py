@@ -35,6 +35,20 @@ class Post(models.Model):
         verbose_name='Выберете группу',
         help_text='Выберите группу'
     )
+    # Поле для картинки (необязательное)
+    image = models.ImageField(
+        'Картинка',
+        upload_to='posts/',
+        blank=True
+    )
+
+    # Аргумент upload_to указывает директорию,
+    # в которую будут загружаться пользовательские файлы.
+
+    class Meta:
+        ordering = ('-pub_date',)
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
 
     def __str__(self):
         return self.text[:15]

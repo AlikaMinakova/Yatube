@@ -75,17 +75,18 @@ def group_posts(request, slug):
     # из базы данных или возвращает сообщение об ошибке, если объект не найден.
     # В нашем случае в переменную group будут переданы объекты модели Group,
     # поле slug у которых соответствует значению slug в запросе
-    group = get_object_or_404(Group, slug=slug)
+
+    #group = get_object_or_404(Group, slug=slug)
 
     # Метод .filter позволяет ограничить поиск по критериям.
     # Это аналог добавления
     # условия WHERE group_id = {group_id}
-    posts = Post.objects.filter(group=group).order_by('-pub_date')[:10]
-    context = {
-        'group': group,
-        'posts': posts,
-        'title': f'Записи сообщества {group}',
-    }
+    # posts = Post.objects.filter(group=group).order_by('-pub_date')[:10]
+    # context = {
+    #     'group': group,
+    #     'posts': posts,
+    #     'title': f'Записи сообщества {group}',
+    # }
 
     group = get_object_or_404(Group, slug=slug)
     post_list = Post.objects.all().filter(group=group).order_by('-pub_date')
@@ -114,6 +115,7 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
+    #post = get_object_or_404(Post, id=post_id)
     post = Post.objects.filter(id=post_id)
     context = {
         'post': post
@@ -123,54 +125,36 @@ def post_detail(request, post_id):
 
 def post_create(request):
 
-    # Создаём объект формы
-
-    # Проверяем, получен POST-запрос или какой-то другой:
     if request.method == 'POST':
-        # Создаём объект формы класса ContactForm
-        # и передаём в него полученные данные
-        form = PostForm(request.POST)
-
-        # Если все данные формы валидны - работаем с "очищенными данными" формы
+        form = PostForm(
+            request.POST or None,
+            files=request.FILES or None,
+        )
         if form.is_valid():
-            # Берём валидированные данные формы из словаря form.cleaned_data
-            form.text = form.cleaned_data['text']
-            form.group = form.cleaned_data['group']
-            # При необходимости обрабатываем данные
-            # ...
-            # сохраняем объект в базу
             post = form.save(False)
             post.author = request.user
             post.save()
-
-            # Функция redirect перенаправляет пользователя
-            # на другую страницу сайта, чтобы защититься
-            # от повторного заполнения формы
             return redirect(f'/profile/{request.user.username}/')
-
-        # Если условие if form.is_valid() ложно и данные не прошли валидацию -
-        # передадим полученный объект в шаблон,
-        # чтобы показать пользователю информацию об ошибке
-
-        # Заодно заполним все поля формы данными, прошедшими валидацию,
-        # чтобы не заставлять пользователя вносить их повторно
         return render(request, 'posts/create_post.html', {'form': form, 'is_edit': False})
-
-    # Если пришёл не POST-запрос - создаём и передаём в шаблон пустую форму
-    # пусть пользователь напишет что-нибудь
     form = PostForm()
     return render(request, 'posts/create_post.html', {'form': form, 'is_edit': False})
 
 
 def post_edit(request, id_post):
-    post = Post.objects.get(id=id_post)
+    post = get_object_or_404(Post, pk=id_post)
+
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(
+            request.POST or None,
+            files=request.FILES or None,
+            instance=post
+        )
+
+        #if post.author != request.user:
+        # return redirect('posts:post_detail', post_id=id_post)
+
         if form.is_valid():
-            post.text = form.cleaned_data['text']
-            post.group = form.cleaned_data['group']
-            post.pub_date = datetime.datetime.now()
-            post.save()
+            form.save()
             return redirect(f'/profile/{request.user.username}/')
 
         return render(request, 'posts/create_post.html', {'form': form, 'is_edit': True, 'post': post})

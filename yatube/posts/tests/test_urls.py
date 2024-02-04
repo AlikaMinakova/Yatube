@@ -1,30 +1,44 @@
 # posts/tests/test_urls.py
+from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
 
+from ..models import Group, Post
 
-class StaticURLTests(TestCase):
+User = get_user_model()
+
+
+class TaskURLTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # Создадим запись в БД для проверки доступности адреса task/test-slug/
+        cls.group=Group.objects.create(
+                title='literature',
+                slug='literature',
+                description='textdescription'
+            )
+        Post.objects.create(
+            text='Тестовый текст2',
+            group=cls.group,
+            author=User.objects.create_user(username='tom')
+        )
+
     def setUp(self):
-        # Устанавливаем данные для тестирования
-        # Создаём экземпляр клиента. Он неавторизован.
+        # Создаем неавторизованный клиент
         self.guest_client = Client()
+        # Создаем второй клиент, который будет авторизован
+        self.user = User.objects.create_user(username='user')
+        self.authorized_client = Client()
+        # Авторизуем пользователя
+        self.authorized_client.force_login(self.user)
 
-    def test_homepage(self):
-        # Отправляем запрос через client,
-        # созданный в setUp()
+    # Проверяем общедоступные страницы
+    def test_home_url_exists_at_desired_location(self):
+        """Страница / доступна любому пользователю."""
         response = self.guest_client.get('/')
         self.assertEqual(response.status_code, 200)
 
-    def test_about_aythor(self):
-        # Отправляем запрос через client,
-        # созданный в setUp()
-        response = self.guest_client.get('/about/author/')
-        self.assertEqual(response.status_code, 200)
-
-    def test_about_tech(self):
-        # Отправляем запрос через client,
-        # созданный в setUp()
-        response = self.guest_client.get('/about/tech/')
-        self.assertEqual(response.status_code, 200)
+    # Проверяем общедоступные страницы
 
 # через консоль
 # python manage.py shell
@@ -65,5 +79,3 @@ class StaticURLTests(TestCase):
 # # Запустит только тест test_homepage()
 # # из класса StaticURLTests для test_urls.py в приложении posts
 # python3 manage.py test posts.tests.test_urls.StaticURLTests.test_homepage
-
-

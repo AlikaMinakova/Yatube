@@ -19,6 +19,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     # Дорогой Джанго, если запрошена главная страница (''),
     # перейди в файл urls приложения ice_cream и проверь там все пути
@@ -31,3 +34,14 @@ urlpatterns = [
     path('auth/', include('django.contrib.auth.urls')),
     path('about/', include('about.urls', namespace='about')),
 ]
+
+# обработчик страницы с ошибкой, для 403 - в settings.py
+handler404 = 'core.views.page_not_found'
+
+#При дефолтных настройках проекта в режиме
+# разработчика Django не будет раздавать картинки,
+# загруженные пользователями, настроим отображение:
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )
